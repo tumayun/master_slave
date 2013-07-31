@@ -1,0 +1,6 @@
+require 'master_slave/base'
+require 'master_slave/config'
+require 'master_slave/connection_handler'
+require 'master_slave/runtime_registry'
+require 'master_slave/version'
+require 'master_slave/railtie'
