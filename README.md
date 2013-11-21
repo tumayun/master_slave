@@ -4,14 +4,14 @@ Mysql separate read and write.
 
 # Supported versions
 
-* Ruby 2.0.0
-* Rails 4.0
+* Ruby 1.9.2 +
+* Rails 3.2.0 +
 
 # Install
 
 Put this line in your Gemfile:
 ```
-gem 'master_slave'
+gem 'master_slave', github: 'tumayun/master_slave', branch: 'rails_3_2_0'
 ```
 Then bundle:
 ```

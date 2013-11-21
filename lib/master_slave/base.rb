@@ -5,6 +5,11 @@ module MasterSlave
     included do
       cattr_accessor :slave_connection_names
       self.slave_connection_names = []
+
+      class << self
+        alias_method :connection_without_master_slave, :connection
+        alias_method :connection, :connection_with_master_slave
+      end
     end
 
     module ClassMethods
@@ -26,16 +31,18 @@ module MasterSlave
         end
       end
 
-      def connection
+      def connection_with_master_slave
         slave_block        = MasterSlave::RuntimeRegistry.slave_block
         current_slave_name = MasterSlave::RuntimeRegistry.current_slave_name
 
-        if slave_block && current_slave_name
+        if defined?(Rails) && Rails.env.test?
+          connection_without_master_slave
+        elsif slave_block && current_slave_name
           pool_name  = MasterSlave::ConnectionHandler.connection_pool_name(current_slave_name)
           ar_proxy   = MasterSlave::ConnectionHandler::ArProxy.new(pool_name)
           ActiveRecord::Base.connection_handler.retrieve_connection(ar_proxy)
         else
-          super
+          connection_without_master_slave
         end
       end
 
