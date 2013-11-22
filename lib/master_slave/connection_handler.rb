@@ -25,28 +25,21 @@ module MasterSlave
       def setup_connection
         ActiveRecord::Base.slave_connection_names ||= []
         MasterSlave.config.slave_names.each do |slave_name|
-          # activerecord/lib/active_record/connection_adapters/abstract/connection_specification.rb +128
           ActiveRecord::Base.slave_connection_names << slave_name.to_s.strip
           configuration = MasterSlave.config.slave_config(slave_name).symbolize_keys
+          unless configuration.key?(:adapter) then raise AdapterNotSpecified, "database configuration does not specify adapter" end
 
-          resolver = ActiveRecord::Base::ConnectionSpecification::Resolver.new(configuration, nil)
-
-          spec = resolver.spec
-
-          unless ActiveRecord::Base.respond_to?(spec.adapter_method)
+          adapter_method = "#{configuration[:adapter]}_connection"
+          unless ActiveRecord::Base.respond_to?(adapter_method)
             raise AdapterNotFound, "database configuration specifies nonexistent #{spec.config[:adapter]} adapter"
           end
 
-          ar_proxy = ArProxy.new(connection_pool_name(slave_name))
-
-          # activerecord/lib/active_record/connection_adapters/abstract/connection_specification.rb +179
-          # activerecord/lib/active_record/connection_adapters/abstract/connection_pool.rb +424
           # remove_connection 时会调用方法内部 ar_proxy.name
+          ar_proxy = ArProxy.new(connection_pool_name(slave_name))
           ActiveRecord::Base.remove_connection(ar_proxy)
 
-          # activerecord/lib/active_record/connection_adapters/abstract/connection_pool.rb +373
-          # establish_connection 时，使用 ar_proxy.name
-          ActiveRecord::Base.connection_handler.establish_connection ar_proxy.name, spec
+          spec = ActiveRecord::Base::ConnectionSpecification.new(configuration, adapter_method)
+          ActiveRecord::Base.connection_handler.establish_connection spec
         end
       end
     end

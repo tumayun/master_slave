@@ -10,8 +10,8 @@ Gem::Specification.new do |gem|
   gem.summary       = 'master_slave.'
   gem.description   = 'mysql separate read and write.'
 
-  gem.files         = Dir.glob("lib/**/*")
+  gem.files         = Dir["lib/**/*"]
   gem.require_path  = 'lib'
 
-  gem.add_dependency 'rails', '~> 3.2.0'
+  gem.add_dependency 'rails', ['>= 3.0.0', '< 3.2.0']
 end
