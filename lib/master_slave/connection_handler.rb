@@ -39,7 +39,7 @@ module MasterSlave
           ActiveRecord::Base.remove_connection(ar_proxy)
 
           spec = ActiveRecord::Base::ConnectionSpecification.new(configuration, adapter_method)
-          ActiveRecord::Base.connection_handler.establish_connection spec
+          ActiveRecord::Base.connection_handler.establish_connection ar_proxy.name, spec
         end
       end
     end
