@@ -7,8 +7,8 @@ Mysql separate read and write.
 
 # Supported versions
 
-* Ruby 2.0.0
-* Rails 4.0
+* Ruby >= 2.0.0
+* Rails >= 4.1.0
 
 # Install
 
