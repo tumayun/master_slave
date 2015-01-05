@@ -28,7 +28,7 @@ module MasterSlave
 
     def load_config
       if File.exist?(self.class.config_file)
-        hash_config = YAML.load(ERB.new(File.open(self.class.config_file).read).result)
+        hash_config = YAML.load(ERB.new(File.read(self.class.config_file)).result)
         HashWithIndifferentAccess.new(hash_config)[Rails.env]
       else
         {}
