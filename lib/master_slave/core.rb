@@ -1,5 +1,5 @@
 module MasterSlave
-  module Base
+  module Core
     extend ActiveSupport::Concern
 
     included do
@@ -47,7 +47,7 @@ module MasterSlave
 
       def with_slave(slave_name)
         slave_name = slave_name.to_s.strip
-        raise "#{slave_name} not exist" unless ActiveRecord::Base.slave_connection_names.include?(slave_name)
+        raise "The slave name is not exist.(#{slave_name})" unless ActiveRecord::Base.slave_connection_names.include?(slave_name)
         MasterSlave::RuntimeRegistry.current_slave_name = slave_name
         MasterSlave::RuntimeRegistry.slave_block        = true
         yield

@@ -10,25 +10,21 @@ module MasterSlave
     end
 
     class << self
-
-      def setup
-        setup_connection
-      end
-
       def connection_pool_name(slave_name)
         "master_slave_#{slave_name.to_s.strip}"
       end
 
-      protected
-
       def setup_connection
         ActiveRecord::Base.slave_connection_names ||= []
         MasterSlave.config.slave_names.each do |slave_name|
-          ActiveRecord::Base.slave_connection_names << slave_name.to_s.strip
-          spec = { Rails.env => MasterSlave.config.slave_config(slave_name) }
+          slave_name = slave_name.to_s.strip
+          if !ActiveRecord::Base.slave_connection_names.include? slave_name
+            ActiveRecord::Base.slave_connection_names << slave_name
+          end
 
+          spec = { Rails.env => MasterSlave.config.slave_config(slave_name) }
           resolver = ActiveRecord::ConnectionAdapters::ConnectionSpecification::Resolver.new spec
-          spec = resolver.spec(Rails.env)
+          spec = resolver.spec(Rails.env.to_sym)
 
           unless ActiveRecord::Base.respond_to?(spec.adapter_method)
             raise AdapterNotFound, "database configuration specifies nonexistent #{spec.config[:adapter]} adapter"

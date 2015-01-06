@@ -1,9 +1,4 @@
 module MasterSlave
-
-  def self.config
-    @config ||= MasterSlave::Configuration.new
-  end
-
   class Configuration
     cattr_accessor :config_file
 
@@ -12,7 +7,7 @@ module MasterSlave
     end
 
     def slave_names
-      raise "#{Rails.env}'s slave config not exist" if @content.blank?
+      raise "#{Rails.env}'s slave config is not exist" if @content.blank?
       @shard_names ||= @content.keys.sort
     end
 
