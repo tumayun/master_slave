@@ -3,7 +3,7 @@ By [Tumayun](http://tumayun.com/).
 
 [![Gem Version](https://badge.fury.io/rb/master_slave.png)](http://badge.fury.io/rb/master_slave)
 
-Mysql separate read and write.
+Rails separate read and write.
 
 # Supported versions
 
